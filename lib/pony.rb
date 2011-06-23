@@ -219,6 +219,10 @@ module Pony
 
     mail.charset = options[:charset] if options[:charset] # charset must be set after setting content_type
 
+    if mail.multipart? && options[:text_part_charset]
+      mail.text_part.charset = options[:text_part_charset]
+    end
+
     mail
   end
 

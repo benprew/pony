@@ -82,6 +82,11 @@ describe Pony do
       mail.charset.should == 'UTF-8'
     end
 
+    it "text_part_charset" do
+      mail = Pony.build_mail(:attachments => {"foo.txt" => "content of foo.txt"}, :body => 'test', :text_part_charset => 'ISO-2022-JP')
+      mail.text_part.charset.should == 'ISO-2022-JP'
+    end
+
     it "default charset" do
       Pony.build_mail(:body => 'body').charset.should == 'UTF-8'
       Pony.build_mail(:body => 'body', :content_type => 'text/html').charset.should == 'UTF-8'
