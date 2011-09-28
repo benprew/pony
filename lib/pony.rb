@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'mail'
 require 'base64'
 
