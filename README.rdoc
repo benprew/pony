@@ -23,33 +23,47 @@ This can be over-ridden if you specify a via option:
 
 You can also specify options for SMTP:
 
-  Pony.mail(:to => 'you@example.com', :via => :smtp, :via_options => {
-    :address        => 'smtp.yourserver.com',
-    :port           => '25',
-    :user_name      => 'user',
-    :password       => 'password',
-    :authentication => :plain, # :plain, :login, :cram_md5, no auth by default
-    :domain         => "localhost.localdomain" # the HELO domain provided by the client to the server
-  }
+  Pony.mail({
+    :to => 'you@example.com',
+    :via => :smtp,
+    :via_options => {
+      :address        => 'smtp.yourserver.com',
+      :port           => '25',
+      :user_name      => 'user',
+      :password       => 'password',
+      :authentication => :plain, # :plain, :login, :cram_md5, no auth by default
+      :domain         => "localhost.localdomain" # the HELO domain provided by the client to the server
+    }
+  })
 
 Gmail example (with TLS/SSL)
 
-  Pony.mail(:to => 'you@example.com', :via => :smtp, :via_options => {
-    :address              => 'smtp.gmail.com',
-    :port                 => '587',
-    :enable_starttls_auto => true,
-    :user_name            => 'user',
-    :password             => 'password',
-    :authentication       => :plain, # :plain, :login, :cram_md5, no auth by default
-    :domain               => "localhost.localdomain" # the HELO domain provided by the client to the server
+  Pony.mail({
+    :to => 'you@example.com',
+    :via => :smtp,
+    :via_options => {
+      :address              => 'smtp.gmail.com',
+      :port                 => '587',
+      :enable_starttls_auto => true,
+      :user_name            => 'user',
+      :password             => 'password',
+      :authentication       => :plain, # :plain, :login, :cram_md5, no auth by default
+      :domain               => "localhost.localdomain" # the HELO domain provided by the client to the server
+    }
   })
 
 And options for Sendmail:
 
-  Pony.mail(:to => 'you@example.com', :via => :smtp, :via_options => {
-    :location  => '/path/to/sendmail' # this defaults to 'which sendmail' or '/usr/sbin/sendmail' if 'which' fails
-    :arguments => '-t' # -t and -i are the defaults
-  }
+  Pony.mail({
+    :to => 'you@example.com',
+    :via => :sendmail,
+    :via_options => {
+      :location  => '/path/to/sendmail', # defaults to 'which sendmail' or '/usr/sbin/sendmail' if 'which' fails
+      :arguments => '-t' # -t and -i are the defaults
+    }
+  })
+
+If you're using <tt>ssmtp</tt>, set <tt>:arguments => ''</tt>.
 
 == Attachments
 
@@ -182,4 +196,3 @@ mailing list: ponyrb@googlegroups.com
 0.4
 * Implemented file attachments option
 * use TLS if :tls => true
-
