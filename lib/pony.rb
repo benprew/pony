@@ -112,6 +112,8 @@ module Pony
 #   Pony.mail(:from => 'pony@example.com', :to => 'foo@bar') # Sends mail to foo@bar from pony@example.com using smtp
   def self.options=(value)
     @@options = value
+    symbolize_keys_in! @@options
+    @@options
   end
 
   def self.options()
@@ -124,6 +126,8 @@ module Pony
 #   Pony.mail(:to => 'you@example.com', :cc => 'him@example.com', :from => 'me@example.com', :subject => 'hi', :body => 'Howsit!')
   def self.mail(options)
     options = @@options.merge options
+    symbolize_keys_in! options
+    
     raise(ArgumentError, ":to is required") unless options[:to]
 
     options[:via] = default_delivery_method unless options.has_key?(:via)
@@ -139,7 +143,20 @@ module Pony
   end
 
   private
-
+  
+  def self.symbolize_keys_in!(hash)
+    replacements = []
+    hash.each_pair do | k, v |
+      replacements.push(k) if k.is_a?(String)
+      symbolize_keys_in!(v) if v.is_a?(Hash)
+    end
+    
+    replacements.each do |string_key|
+      hash[string_key.to_sym] = hash.delete(string_key)
+    end
+    return hash # Self returning
+  end
+  
   def self.cross_reference_depricated_fields(options)
     if options.has_key?(:smtp)
       warn depricated_message(:smtp, :via_options)
@@ -198,9 +215,12 @@ module Pony
       elsif options[:body]
         body options[:body]
       end
-
+      
+      # The "via" option is the only one we can and should symbolize implicitly
+      options[:via] = options[:via].to_sym if options[:via]
+      
       delivery_method options[:via], (options.has_key?(:via_options) ? options[:via_options] : {})
-                end
+    end
 
     (options[:attachments] || []).each do |name, body|
       # mime-types wants to send these as "quoted-printable"
