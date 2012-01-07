@@ -128,7 +128,7 @@ module Pony
 
     options[:via] = default_delivery_method unless options.has_key?(:via)
 
-    options = cross_reference_depricated_fields(options)
+    options = cross_reference_deprecated_fields(options)
 
     if options.has_key?(:via) && options[:via] == :sendmail
       options[:via_options] ||= {}
@@ -140,22 +140,22 @@ module Pony
 
   private
 
-  def self.cross_reference_depricated_fields(options)
+  def self.cross_reference_deprecated_fields(options)
     if options.has_key?(:smtp)
-      warn depricated_message(:smtp, :via_options)
+      warn deprecated_message(:smtp, :via_options)
       options[:via_options] = options.delete(:smtp)
     end
 
     # cross-reference pony options to be compatible with keys mail expects
     { :host => :address, :user => :user_name, :auth => :authentication, :tls => :enable_starttls_auto }.each do |key, val|
       if options[:via_options] && options[:via_options].has_key?(key)
-        warn depricated_message(key, val)
+        warn deprecated_message(key, val)
         options[:via_options][val] = options[:via_options].delete(key)
       end
     end
 
     if options[:content_type] && options[:content_type] =~ /html/ && !options[:html_body]
-      warn depricated_message(:content_type, :html_body)
+      warn deprecated_message(:content_type, :html_body)
       options[:html_body] = options[:body]
     end
 
@@ -232,7 +232,7 @@ module Pony
     sendmail.empty? ? '/usr/sbin/sendmail' : sendmail
   end
 
-  def self.depricated_message(method, alternative)
+  def self.deprecated_message(method, alternative)
     warning_message = "warning: '#{method}' is deprecated"
     warning_message += "; use '#{alternative}' instead." if alternative
     return warning_message
