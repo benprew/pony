@@ -203,35 +203,14 @@ describe Pony do
     end
 
   end
-  
-  describe ":via option should support string values" do
-    it "should send via sendmail if :via => 'sendmail'" do
-      mail = Pony.build_mail(:to => 'joe@example.com', :via => 'sendmail')
-      mail.delivery_method.kind_of?(Mail::Sendmail).should == true
-    end
-  end
-  
+
   describe "sendmail binary location" do
     it "should default to /usr/sbin/sendmail if not in path" do
       Pony.stub!(:'`').and_return('')
       Pony.sendmail_binary.should == '/usr/sbin/sendmail'
     end
   end
-  
-  describe "options with stringified keys" do
-    it "should be accepted as arguments" do
-      Pony.should_receive(:build_mail).with(hash_including(:from => 'noreply@pony'))
-      Pony.mail("to" => 'foo@bar', "from" => 'noreply@pony' )
-    end
-    
-    it "should work as defaults" do
-      input = { "from" => 'noreply@pony' }
-      Pony.options = input
-      output = Pony.options
-      output.should == { :from => 'noreply@pony' }
-    end
-  end
-  
+
   describe "default options" do
     it "should use default options" do
       Pony.should_receive(:build_mail).with(hash_including(:from => 'noreply@pony'))
