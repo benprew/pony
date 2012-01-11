@@ -1,5 +1,6 @@
 require 'mail'
 require 'base64'
+require "delegate"
 
 # = The express way to send email in Ruby
 #
@@ -123,39 +124,42 @@ module Pony
 #   Pony.mail(:to => 'you@example.com', :html_body => '<h1>Hello there!</h1>', :body => "In case you can't read html, Hello there.")
 #   Pony.mail(:to => 'you@example.com', :cc => 'him@example.com', :from => 'me@example.com', :subject => 'hi', :body => 'Howsit!')
   def self.mail(options)
-    options = @@options.merge options
+    options = SymbolProxy.new(@@options.merge(options))
+    
     raise(ArgumentError, ":to is required") unless options[:to]
 
     options[:via] = default_delivery_method unless options.has_key?(:via)
 
-    options = cross_reference_depricated_fields(options)
+    options = cross_reference_deprecated_fields(options)
 
     if options.has_key?(:via) && options[:via] == :sendmail
       options[:via_options] ||= {}
       options[:via_options][:location] ||= sendmail_binary
     end
 
-    deliver build_mail(options)
+    deliver(build_mail(options))
   end
 
   private
-
-  def self.cross_reference_depricated_fields(options)
+  
+  def self.cross_reference_deprecated_fields(options)
+    options = SymbolProxy.new(options)
+    
     if options.has_key?(:smtp)
-      warn depricated_message(:smtp, :via_options)
+      warn deprecated_message(:smtp, :via_options)
       options[:via_options] = options.delete(:smtp)
     end
-
+    
     # cross-reference pony options to be compatible with keys mail expects
     { :host => :address, :user => :user_name, :auth => :authentication, :tls => :enable_starttls_auto }.each do |key, val|
       if options[:via_options] && options[:via_options].has_key?(key)
-        warn depricated_message(key, val)
+        warn deprecated_message(key, val)
         options[:via_options][val] = options[:via_options].delete(key)
       end
     end
 
     if options[:content_type] && options[:content_type] =~ /html/ && !options[:html_body]
-      warn depricated_message(:content_type, :html_body)
+      warn deprecated_message(:content_type, :html_body)
       options[:html_body] = options[:body]
     end
 
@@ -171,6 +175,8 @@ module Pony
   end
 
   def self.build_mail(options)
+    options = SymbolProxy.new(options)
+    
     mail = Mail.new do
       to options[:to]
       from options[:from] || 'pony@unknown'
@@ -198,9 +204,11 @@ module Pony
       elsif options[:body]
         body options[:body]
       end
-
-      delivery_method options[:via], (options.has_key?(:via_options) ? options[:via_options] : {})
-                end
+      
+      # We allow the "via" option to be a String as well to allow for YAML configs
+      via_option = options[:via].to_sym if options[:via]
+      delivery_method via_option, (options.has_key?(:via_options) ? options[:via_options] : {})
+    end
 
     (options[:attachments] || []).each do |name, body|
       # mime-types wants to send these as "quoted-printable"
@@ -232,9 +240,34 @@ module Pony
     sendmail.empty? ? '/usr/sbin/sendmail' : sendmail
   end
 
-  def self.depricated_message(method, alternative)
+  def self.deprecated_message(method, alternative)
     warning_message = "warning: '#{method}' is deprecated"
     warning_message += "; use '#{alternative}' instead." if alternative
     return warning_message
+  end
+  
+  # This is a wrapper for Hash which works kind of like HashWithIndifferentAccess
+  # from ActiveSupport. Given a key it will first try a symbol lookup, then a
+  # string lookup.
+  class SymbolProxy < DelegateClass(Hash) #:nodoc:
+    # If the passed hash already is wrapped, return itself
+    def self.new(with_hash)
+      return with_hash if with_hash.class == self
+      super
+    end
+    
+    def initialize(with_hash)
+      __setobj__(with_hash)
+    end
+    
+    def [](key)
+      h = __getobj__
+      v = (h[key.to_sym] || h[key.to_s])
+      v.is_a?(Hash) ? self.class.new(v) : v
+    end
+    
+    def has_key?(key)
+      __getobj__.has_key?(key.to_sym) || __getobj__.has_key?(key.to_s)
+    end
   end
 end
