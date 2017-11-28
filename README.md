@@ -198,6 +198,7 @@ https://groups.google.com/forum/#!forum/ponyrb
 *  MIKAMI Yoshiyuki  [@yoshuki](https://github.com/yoshuki)
 *  Mathieu Martin  [@webmat](https://github.com/webmat)
 *  Michael Durrant  [@durrantm](https://github.com/durrantm)
+*  Michał Kwiatkowski  [@mkwiatkowski](https://github.com/mkwiatkowski)
 *  Nami-Doc
 *  Neil Middleton  [@neilmiddleton](https://github.com/neilmiddleton)
 *  Neil Mock  [@neilmock](https://github.com/neilmock)
@@ -214,6 +215,9 @@ https://groups.google.com/forum/#!forum/ponyrb
 *  rohit  [@rohit](https://github.com/rohit)
 
 ## Changelog ##
+
+#### 1.12 ####
+* fix bug: NoMethodError when using mail 2.7.0
 
 #### 1.11 ####
 * Improved handling of mails with both text and html bodies and attachments
