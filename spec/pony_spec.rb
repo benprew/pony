@@ -31,116 +31,116 @@ describe Pony do
 
   describe "builds a Mail object with field:" do
     it "to" do
-      expect(Pony.build_mail(:to => 'joe@example.com').to).to eq [ 'joe@example.com' ]
+      expect(Pony.send(:build_mail, :to => 'joe@example.com').to).to eq [ 'joe@example.com' ]
     end
 
     it "to with multiple recipients" do
-      expect(Pony.build_mail(:to => 'joe@example.com, friedrich@example.com').to).to eq [ 'joe@example.com', 'friedrich@example.com' ]
+      expect(Pony.send(:build_mail, :to => 'joe@example.com, friedrich@example.com').to).to eq [ 'joe@example.com', 'friedrich@example.com' ]
     end
 
     it "to with multiple recipients and names" do
-      expect(Pony.build_mail(:to => 'joe@example.com, "Friedrich Hayek" <friedrich@example.com>').to).to eq [ 'joe@example.com', 'friedrich@example.com' ]
+      expect(Pony.send(:build_mail, :to => 'joe@example.com, "Friedrich Hayek" <friedrich@example.com>').to).to eq [ 'joe@example.com', 'friedrich@example.com' ]
     end
 
     it "to with multiple recipients and names in an array" do
-      expect(Pony.build_mail(:to => ['joe@example.com', '"Friedrich Hayek" <friedrich@example.com>']).to).to eq [ 'joe@example.com', 'friedrich@example.com' ]
+      expect(Pony.send(:build_mail, :to => ['joe@example.com', '"Friedrich Hayek" <friedrich@example.com>']).to).to eq [ 'joe@example.com', 'friedrich@example.com' ]
     end
 
     it "cc" do
-      expect(Pony.build_mail(:cc => 'joe@example.com').cc).to eq [ 'joe@example.com' ]
+      expect(Pony.send(:build_mail, :cc => 'joe@example.com').cc).to eq [ 'joe@example.com' ]
     end
 
     it "reply_to" do
-      expect(Pony.build_mail(:reply_to => 'joe@example.com').reply_to).to eq [ 'joe@example.com' ]
+      expect(Pony.send(:build_mail, :reply_to => 'joe@example.com').reply_to).to eq [ 'joe@example.com' ]
     end
 
     it "cc with multiple recipients" do
-      expect(Pony.build_mail(:cc => 'joe@example.com, friedrich@example.com').cc).to eq [ 'joe@example.com', 'friedrich@example.com' ]
+      expect(Pony.send(:build_mail, :cc => 'joe@example.com, friedrich@example.com').cc).to eq [ 'joe@example.com', 'friedrich@example.com' ]
     end
 
     it "from" do
-      expect(Pony.build_mail(:from => 'joe@example.com').from).to eq [ 'joe@example.com' ]
+      expect(Pony.send(:build_mail, :from => 'joe@example.com').from).to eq [ 'joe@example.com' ]
     end
 
     it "bcc" do
-      expect(Pony.build_mail(:bcc => 'joe@example.com').bcc).to eq [ 'joe@example.com' ]
+      expect(Pony.send(:build_mail, :bcc => 'joe@example.com').bcc).to eq [ 'joe@example.com' ]
     end
 
     it "bcc with multiple recipients" do
-      expect(Pony.build_mail(:bcc => 'joe@example.com, friedrich@example.com').bcc).to eq [ 'joe@example.com', 'friedrich@example.com' ]
+      expect(Pony.send(:build_mail, :bcc => 'joe@example.com, friedrich@example.com').bcc).to eq [ 'joe@example.com', 'friedrich@example.com' ]
     end
 
     it "charset" do
-      mail = Pony.build_mail(:charset => 'UTF-8')
+      mail = Pony.send(:build_mail, :charset => 'UTF-8')
       expect(mail.charset).to eq 'UTF-8'
     end
 
     it "text_part_charset" do
-      mail = Pony.build_mail(:attachments => {"foo.txt" => "content of foo.txt"}, :body => 'test', :text_part_charset => 'ISO-2022-JP')
+      mail = Pony.send(:build_mail, :attachments => {"foo.txt" => "content of foo.txt"}, :body => 'test', :text_part_charset => 'ISO-2022-JP')
       expect(mail.text_part.charset).to eq 'ISO-2022-JP'
     end
 
     it "default charset" do
-      expect(Pony.build_mail(body: 'body').charset).to eq 'UTF-8'
-      expect(Pony.build_mail(html_body: 'body').charset).to eq 'UTF-8'
+      expect(Pony.send(:build_mail, body: 'body').charset).to eq 'UTF-8'
+      expect(Pony.send(:build_mail, html_body: 'body').charset).to eq 'UTF-8'
     end
 
     it "from (default)" do
-      expect(Pony.build_mail({}).from).to eq [ 'pony@unknown' ]
+      expect(Pony.send(:build_mail, {}).from).to eq [ 'pony@unknown' ]
     end
 
     it "subject" do
-      expect(Pony.build_mail(:subject => 'hello').subject).to eq 'hello'
+      expect(Pony.send(:build_mail, :subject => 'hello').subject).to eq 'hello'
     end
 
     it "body" do
-      expect(Pony.build_mail(body: 'What do you know, Joe?').body)
+      expect(Pony.send(:build_mail, body: 'What do you know, Joe?').body)
         .to eq 'What do you know, Joe?'
     end
 
     it "html_body" do
-      expect(Pony.build_mail(html_body: 'What do you know, Joe?').parts.first.body)
+      expect(Pony.send(:build_mail, html_body: 'What do you know, Joe?').parts.first.body)
         .to eq 'What do you know, Joe?'
-      expect(Pony.build_mail(html_body: 'What do you know, Joe?').parts.first.content_type)
+      expect(Pony.send(:build_mail, html_body: 'What do you know, Joe?').parts.first.content_type)
         .to eq 'text/html; charset=UTF-8'
     end
 
     it 'content_type' do
-      expect(Pony.build_mail(content_type: 'multipart/related').content_type)
+      expect(Pony.send(:build_mail, content_type: 'multipart/related').content_type)
         .to eq 'multipart/related'
     end
 
     it "date" do
       now = Time.now
-      expect(Pony.build_mail(:date => now).date).to eq DateTime.parse(now.to_s)
+      expect(Pony.send(:build_mail, :date => now).date).to eq DateTime.parse(now.to_s)
     end
 
     it "message_id" do
-      expect(Pony.build_mail(:message_id => '<abc@def.com>').message_id).to eq 'abc@def.com'
+      expect(Pony.send(:build_mail, :message_id => '<abc@def.com>').message_id).to eq 'abc@def.com'
     end
 
     it "custom headers" do
-      expect(Pony.build_mail(:headers => {"List-ID" => "<abc@def.com>"})['List-ID'].to_s).to eq '<abc@def.com>'
+      expect(Pony.send(:build_mail, :headers => {"List-ID" => "<abc@def.com>"})['List-ID'].to_s).to eq '<abc@def.com>'
     end
 
     it "sender" do
-      expect(Pony.build_mail(:sender => "abc@def.com")['Sender'].to_s).to eq 'abc@def.com'
+      expect(Pony.send(:build_mail, :sender => "abc@def.com")['Sender'].to_s).to eq 'abc@def.com'
     end
 
     it "utf-8 encoded subject line" do
-      mail = Pony.build_mail(:to => 'btp@foo', :subject => 'Café', :body => 'body body body')
+      mail = Pony.send(:build_mail, :to => 'btp@foo', :subject => 'Café', :body => 'body body body')
       expect(mail['subject'].encoded).to match( /^Subject: =\?UTF-8/ )
     end
 
     it "attachments" do
-      mail = Pony.build_mail(:attachments => {"foo.txt" => "content of foo.txt"}, :body => 'test')
+      mail = Pony.send(:build_mail, :attachments => {"foo.txt" => "content of foo.txt"}, :body => 'test')
       expect(mail.parts.length).to eq 2
       expect(mail.parts.first.to_s).to match( /Content-Type: text\/plain/ )
       expect(mail.attachments.first.content_id).to eq "<foo.txt@#{Socket.gethostname}>"
     end
 
     it "suggests mime-type" do
-      mail = Pony.build_mail(:attachments => {"foo.pdf" => "content of foo.pdf"})
+      mail = Pony.send(:build_mail, :attachments => {"foo.pdf" => "content of foo.pdf"})
       expect(mail.parts.length).to eq 1
       expect(mail.parts.first.to_s).to match( /Content-Type: application\/pdf/ )
       expect(mail.parts.first.to_s).to match( /filename=foo.pdf/ )
@@ -148,7 +148,7 @@ describe Pony do
     end
 
     it "encodes xlsx files as base64" do
-      mail = Pony.build_mail(:attachments => {"foo.xlsx" => "content of foo.xlsx"})
+      mail = Pony.send(:build_mail, :attachments => {"foo.xlsx" => "content of foo.xlsx"})
       expect(mail.parts.length).to eq 1
       expect(mail.parts.first.to_s).to match( /Content-Type: application\/vnd.openxmlformats-officedocument.spreadsheetml.sheet/ )
       expect(mail.parts.first.to_s).to match( /filename=foo.xlsx/ )
@@ -156,7 +156,7 @@ describe Pony do
     end
 
     it "passes cc and bcc as the list of recipients" do
-      mail = Pony.build_mail(:to => ['to'], :cc => ['cc'], :from => ['from'], :bcc => ['bcc'])
+      mail = Pony.send(:build_mail, :to => ['to'], :cc => ['cc'], :from => ['from'], :bcc => ['bcc'])
       expect(mail.destinations).to eq  ['to', 'cc', 'bcc']
     end
   end
@@ -177,12 +177,12 @@ describe Pony do
     describe "SMTP transport" do
 
       it "defaults to localhost as the SMTP server" do
-        mail = Pony.build_mail(:to => "foo@bar", :enable_starttls_auto => true, :via => :smtp)
+        mail = Pony.send(:build_mail, :to => "foo@bar", :enable_starttls_auto => true, :via => :smtp)
         expect(mail.delivery_method.settings[:address]).to eq 'localhost'
       end
 
       it "enable starttls when tls option is true" do
-        mail = Pony.build_mail(:to => "foo@bar", :enable_starttls_auto => true, :via => :smtp)
+        mail = Pony.send(:build_mail, :to => "foo@bar", :enable_starttls_auto => true, :via => :smtp)
         expect(mail.delivery_method.settings[:enable_starttls_auto]).to eq true
       end
     end
@@ -190,12 +190,12 @@ describe Pony do
 
   describe ":via option should over-ride the default transport mechanism" do
     it "should send via sendmail if :via => sendmail" do
-      mail = Pony.build_mail(:to => 'joe@example.com', :via => :sendmail)
+      mail = Pony.send(:build_mail, :to => 'joe@example.com', :via => :sendmail)
       expect(mail.delivery_method.kind_of?(Mail::Sendmail)).to eq true
     end
 
     it "should send via smtp if :via => smtp" do
-      mail = Pony.build_mail(:to => 'joe@example.com', :via => :smtp)
+      mail = Pony.send(:build_mail, :to => 'joe@example.com', :via => :smtp)
       expect(mail.delivery_method.kind_of?(Mail::SMTP)).to eq true
     end
 
@@ -204,7 +204,7 @@ describe Pony do
   describe "sendmail binary location" do
     it "should default to /usr/sbin/sendmail if not in path" do
       allow(Pony).to receive(:'`').and_return('')
-      expect(Pony.sendmail_binary).to eq '/usr/sbin/sendmail'
+      expect(Pony.send(:sendmail_binary)).to eq '/usr/sbin/sendmail'
     end
   end
 
@@ -303,7 +303,7 @@ describe Pony do
   describe "content type" do
     context "mail with attachments, html_body and body " do
       subject(:mail) do
-        Pony.build_mail(
+        Pony.send(:build_mail,
           :body => 'test',
           :html_body => 'What do you know, Joe?',
           :attachments => {"foo.txt" => "content of foo.txt"},
@@ -322,7 +322,7 @@ describe Pony do
 
   describe "additional headers" do
     subject(:mail) do
-      Pony.build_mail(
+      Pony.send(:build_mail,
         :body => 'test',
         :html_body => 'What do you know, Joe?',
         :attachments => {"foo.txt" => "content of foo.txt"},
@@ -336,7 +336,7 @@ describe Pony do
 
     context "when parts aren't present" do
       subject(:mail) do
-        Pony.build_mail(
+        Pony.send(:build_mail,
           :body => 'test',
           :body_part_header => { content_disposition: "inline"},
           :html_body_part_header => { content_disposition: "inline"}
