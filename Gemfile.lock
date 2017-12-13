@@ -1,16 +1,16 @@
 PATH
   remote: .
   specs:
-    pony (1.11)
+    pony (1.12)
       mail (>= 2.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
     diff-lcs (1.2.5)
-    mail (2.6.1)
-      mime-types (>= 1.16, < 3)
-    mime-types (2.3)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
+    mini_mime (1.0.0)
     rake (10.1.1)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
