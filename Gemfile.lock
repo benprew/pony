@@ -31,8 +31,8 @@ PLATFORMS
 
 DEPENDENCIES
   pony!
-  rake (>= 10)
+  rake
   rspec (>= 2.14)
 
 BUNDLED WITH
-   1.11.2
+   1.16.0
