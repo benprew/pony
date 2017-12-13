@@ -213,40 +213,41 @@ module Pony
     end
 
     def build_mail(options)
+      nso = non_standard_options
       mail = Mail.new do |m|
         options[:date] ||= Time.now
         options[:from] ||= 'pony@unknown'
         options[:via_options] ||= {}
 
         options.each do |k, v|
-          next if non_standard_options.include?(k)
+          next if nso.include?(k)
           m.send(k, v)
         end
 
-        # Automatic handling of multipart messages in the underlying
-        # mail library works pretty well for the most part, but in
-        # the case where we have attachments AND text AND html bodies
-        # we need to explicitly define a second multipart/alternative
-        # boundary to encapsulate the body-parts within the
-        # multipart/mixed boundary that will be created automatically.
-        if options[:attachments] && options[:html_body] && options[:body]
-          m.part(:content_type => 'multipart/alternative') do |p|
-            p.html_part = build_html_part(options)
-            p.text_part = build_text_part(options)
-          end
+        m.delivery_method options[:via], options[:via_options]
+      end
 
-        # Otherwise if there is more than one part we still need to
-        # ensure that they are all declared to be separate.
-        elsif options[:html_body] || options[:attachments]
-          m.html_part = build_html_part(options) if options[:html_body]
-          m.text_part = build_text_part(options) if options[:body]
-
-        # If all we have is a text body, we don't need to worry about parts.
-        elsif options[:body]
-          m.body options[:body]
+      # Automatic handling of multipart messages in the underlying
+      # mail library works pretty well for the most part, but in
+      # the case where we have attachments AND text AND html bodies
+      # we need to explicitly define a second multipart/alternative
+      # boundary to encapsulate the body-parts within the
+      # multipart/mixed boundary that will be created automatically.
+      if options[:attachments] && options[:html_body] && options[:body]
+        mail.part(:content_type => 'multipart/alternative') do |p|
+          p.html_part = build_html_part(options)
+          p.text_part = build_text_part(options)
         end
 
-        m.delivery_method options[:via], options[:via_options]
+      # Otherwise if there is more than one part we still need to
+      # ensure that they are all declared to be separate.
+      elsif options[:html_body] || options[:attachments]
+        mail.html_part = build_html_part(options) if options[:html_body]
+        mail.text_part = build_text_part(options) if options[:body]
+
+      # If all we have is a text body, we don't need to worry about parts.
+      elsif options[:body]
+        mail.body options[:body]
       end
 
       (options[:headers] ||= {}).each do |key, value|
