@@ -146,7 +146,7 @@ module Pony
     if @@append_inputs
       options[:body] = "#{options[:body]}/n #{options.to_s}"
     end
-    
+
     options = @@options.merge options
     options = options.merge @@override_options
 
@@ -247,10 +247,10 @@ module Pony
 
       # If all we have is a text body, we don't need to worry about parts.
       elsif options[:body]
-        body options[:body]
+        m.body options[:body]
       end
 
-      delivery_method options[:via], options[:via_options]
+      m.delivery_method options[:via], options[:via_options]
     end
 
     (options[:headers] ||= {}).each do |key, value|
