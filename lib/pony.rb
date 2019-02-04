@@ -233,7 +233,9 @@ module Pony
       # we need to explicitly define a second multipart/alternative
       # boundary to encapsulate the body-parts within the
       # multipart/mixed boundary that will be created automatically.
-      if options[:attachments] && options[:html_body] && options[:body]
+      options[:attachments] ||= {}
+
+      if options[:attachments].any? && options[:html_body] && options[:body]
         mail.part(:content_type => 'multipart/alternative') do |p|
           p.html_part = build_html_part(options)
           p.text_part = build_text_part(options)
@@ -241,7 +243,7 @@ module Pony
 
       # Otherwise if there is more than one part we still need to
       # ensure that they are all declared to be separate.
-      elsif options[:html_body] || options[:attachments]
+      elsif options[:html_body] || options[:attachments].any?
         mail.html_part = build_html_part(options) if options[:html_body]
         mail.text_part = build_text_part(options) if options[:body]
 
@@ -254,7 +256,7 @@ module Pony
         mail[key] = value
       end
 
-      add_attachments(mail, options[:attachments]) if options[:attachments]
+      add_attachments(mail, options[:attachments]) if options[:attachments].any?
 
       mail.charset = options[:charset] if options[:charset] # charset must be set after setting content_type
 
