@@ -301,6 +301,24 @@ describe Pony do
   end
 
   describe "content type" do
+    shared_examples 'a mail with only html_body and body set' do
+      it { expect(mail.parts.length).to eq 2 }
+      it { expect(mail.content_type.to_s).to include( 'multipart/alternative' ) }
+      it { expect(mail.parts[0].to_s).to include( 'Content-Type: text/html' ) }
+      it { expect(mail.parts[1].to_s).to include( 'Content-Type: text/plain' ) }
+    end
+
+    context "mail html_body and body" do
+      subject(:mail) do
+        Pony.send(:build_mail,
+                  :body => 'test',
+                  :html_body => 'What do you know, Joe?',
+                  )
+      end
+
+      it_behaves_like 'a mail with only html_body and body set'
+    end
+
     context "mail with attachments, html_body and body " do
       subject(:mail) do
         Pony.send(:build_mail,
@@ -317,6 +335,18 @@ describe Pony do
       it { expect(mail.parts[0].parts[0].to_s).to include( 'Content-Type: text/html' ) }
       it { expect(mail.parts[0].parts[1].to_s).to include( 'Content-Type: text/plain' ) }
       it { expect(mail.parts[1].to_s).to include( 'Content-Type: text/plain' ) }
+    end
+
+    context "mail html_body and body and empty attachment list" do
+      subject(:mail) do
+        Pony.send(:build_mail,
+                  :body => 'test',
+                  :html_body => 'What do you know, Joe?',
+                  :attachments => {},
+                  )
+      end
+
+      it_behaves_like 'a mail with only html_body and body set'
     end
   end
 
