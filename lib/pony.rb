@@ -329,7 +329,7 @@ module Pony
     end
 
     def sendmail_binary
-      sendmail = `which sendmail`.chomp
+      sendmail = `which sendmail 2>#{Gem.win_platform? ? 'nul' : '/dev/null'}`.chomp
       sendmail.empty? ? '/usr/sbin/sendmail' : sendmail
     end
   end
