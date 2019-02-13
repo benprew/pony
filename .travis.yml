@@ -1,4 +1,3 @@
 language: ruby
 rvm:
   - ruby-head
-  - 1.9
