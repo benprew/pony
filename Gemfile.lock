@@ -35,4 +35,4 @@ DEPENDENCIES
   rspec (>= 2.14)
 
 BUNDLED WITH
-   1.16.0
+   2.0.1
