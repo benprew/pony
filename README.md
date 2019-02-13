@@ -169,7 +169,7 @@ As pony relies on mail to send the mails, you can also use its TestMailer in you
     Pony.mail(:to => 'foo@bar')
     Mail::TestMailer.deliveries.length
     => 1
-    
+
 For further examples see the [corresponding section of mail's readme](https://github.com/mikel/mail#using-mail-with-testing-or-specing-libraries)
 
 ## Help ##
@@ -186,19 +186,20 @@ https://groups.google.com/forum/#!forum/ponyrb
 
 ## Authors ##
 *  Adam Wiggins  [@adamwiggins](https://github.com/adamwiggins)
-*  Andrea Talbot  [@janehax](https://github.com/janehax)
+*  Andrea Talbot
 *  Ben Prew  [@benprew](https://github.com/benprew)
 *  Cameron Matheson  [@cmatheson](https://github.com/cmatheson)
 *  Carl Hörberg  [@carlhoerberg](https://github.com/carlhoerberg)
 *  Christian Haase  [@krissi](https://github.com/krissi)
 *  Daniel Lopes  [@danielvlopes](https://github.com/danielvlopes)
 *  Doug Hammond  [@dslh](https://github.com/dslh)
+*  Fabó Márton
 *  Hiroshi Saito  [@hiroshi](https://github.com/hiroshi)
 *  Kalin Harvey
 *  MIKAMI Yoshiyuki  [@yoshuki](https://github.com/yoshuki)
 *  Mathieu Martin  [@webmat](https://github.com/webmat)
 *  Michael Durrant  [@durrantm](https://github.com/durrantm)
-*  Michał Kwiatkowski  [@mkwiatkowski](https://github.com/mkwiatkowski)
+*  Michal Kwiatkowski  [@mkwiatkowski](https://github.com/mkwiatkowski)
 *  Nami-Doc
 *  Neil Middleton  [@neilmiddleton](https://github.com/neilmiddleton)
 *  Neil Mock  [@neilmock](https://github.com/neilmock)
@@ -215,6 +216,10 @@ https://groups.google.com/forum/#!forum/ponyrb
 *  rohit  [@rohit](https://github.com/rohit)
 
 ## Changelog ##
+
+#### 1.13 ####
+* fix bug: suppress potential error message from "which"
+* fix bug: Add support for passing empty hashes as attachment
 
 #### 1.12 ####
 * fix bug: NoMethodError when using mail 2.7.0

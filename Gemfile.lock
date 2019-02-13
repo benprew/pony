@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pony (1.12)
+    pony (1.13)
       mail (>= 2.0)
 
 GEM
