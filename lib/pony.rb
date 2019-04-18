@@ -313,7 +313,7 @@ module Pony
 
     def add_attachments(mail, attachments)
       attachments.each do |name, body|
-        name = name.gsub /\s+/, ' '
+        name = name.gsub(/\s+/, ' ')
 
         # mime-types wants to send these as "quoted-printable"
         if name =~ /\.xlsx$/
