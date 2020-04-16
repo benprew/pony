@@ -217,6 +217,9 @@ https://groups.google.com/forum/#!forum/ponyrb
 
 ## Changelog ##
 
+#### 1.13.2 ####
+* Bump rake version, bump outdated gems (rspec and mini_mime)
+
 #### 1.13 ####
 * fix bug: suppress potential error message from "which"
 * fix bug: Add support for passing empty hashes as attachment
